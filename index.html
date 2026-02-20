@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Enzo Habit Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🧠</div>
+      <div class="brandText">
+        <div class="title pixel">Enzo Habit Builder</div>
+        <div class="subtitle">Build daily habits. Keep your streak alive.</div>
+      </div>
+    </div>
+    <div class="topActions">
+      <button id="btnLogout" class="btn ghost hidden">Logout</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- AUTH SCREEN -->
+    <section id="screenAuth" class="card screen">
+      <div class="cardHead">
+        <h1 class="pixel">Welcome</h1>
+        <p class="muted">Sign in to track habits, streaks, and your progress calendar.</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="login">Login</button>
+        <button class="tab" data-tab="register">Register</button>
+        <button class="tab" data-tab="forgot">Forgot Password</button>
+      </div>
+
+      <div class="panel">
+        <!-- LOGIN -->
+        <form id="formLogin" class="form active" data-panel="login" autocomplete="on">
+          <label>
+            <span>Email</span>
+            <input id="loginEmail" type="email" placeholder="you@example.com" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="loginPass" type="password" placeholder="••••••••" required minlength="4" />
+          </label>
+          <button class="btn primary" type="submit">Login</button>
+          <p class="hint">Tip: This demo stores accounts locally in your browser (localStorage).</p>
+        </form>
+
+        <!-- REGISTER -->
+        <form id="formRegister" class="form" data-panel="register" autocomplete="on">
+          <label>
+            <span>Username</span>
+            <input id="regName" type="text" placeholder="Enzo" required minlength="2" maxlength="20" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input id="regEmail" type="email" placeholder="you@example.com" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="regPass" type="password" placeholder="Create a password" required minlength="4" />
+          </label>
+          <button class="btn primary" type="submit">Create Account</button>
+          <p class="hint">We don’t send emails here — “Forgot Password” will reset locally for demo.</p>
+        </form>
+
+        <!-- FORGOT -->
+        <form id="formForgot" class="form" data-panel="forgot" autocomplete="on">
+          <label>
+            <span>Email</span>
+            <input id="forgotEmail" type="email" placeholder="you@example.com" required />
+          </label>
+          <label>
+            <span>New Password</span>
+            <input id="forgotNewPass" type="password" placeholder="New password" required minlength="4" />
+          </label>
+          <button class="btn primary" type="submit">Reset Password</button>
+          <p class="hint">If the account exists, password is updated locally.</p>
+        </form>
+
+        <div id="authMsg" class="msg" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- APP SCREEN -->
+    <section id="screenApp" class="screen hidden">
+      <div class="grid">
+        <!-- LEFT: HABITS -->
+        <section class="card">
+          <div class="cardHead row">
+            <div>
+              <h2 class="pixel">Your Habits</h2>
+              <p class="muted"><span id="helloName">Hi!</span> Add habits and check in daily.</p>
+            </div>
+            <div class="pill">
+              <span class="muted small">Today:</span>
+              <strong id="todayLabel">—</strong>
+            </div>
+          </div>
+
+          <form id="formAddHabit" class="row addHabit">
+            <input id="habitName" type="text" placeholder="New habit (e.g., Drink Water)" maxlength="28" required />
+            <button class="btn primary" type="submit">Add</button>
+          </form>
+
+          <div class="habitsHead row">
+            <div class="muted small">Check in each day to keep streaks.</div>
+            <button id="btnCheckAll" class="btn ghost smallBtn" type="button">Check-in All</button>
+          </div>
+
+          <ul id="habitList" class="habitList"></ul>
+
+          <div class="divider"></div>
+
+          <div class="stats row">
+            <div class="stat">
+              <div class="statLabel">Total Streak</div>
+              <div id="totalStreak" class="statValue">0</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Habits</div>
+              <div id="habitCount" class="statValue">0</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Checked Today</div>
+              <div id="checkedToday" class="statValue">0</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: CALENDAR + QUOTE -->
+        <section class="rightCol">
+          <section class="card">
+            <div class="cardHead row">
+              <div>
+                <h2 class="pixel">Progress Calendar</h2>
+                <p class="muted">Days light up when you check in at least one habit.</p>
+              </div>
+              <div class="calNav">
+                <button id="calPrev" class="btn ghost smallBtn" type="button">◀</button>
+                <div id="calMonth" class="pill"></div>
+                <button id="calNext" class="btn ghost smallBtn" type="button">▶</button>
+              </div>
+            </div>
+
+            <div class="calendar">
+              <div class="calWeekdays">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+              </div>
+              <div id="calGrid" class="calGrid"></div>
+              <div class="calLegend">
+                <span class="dot none"></span><span class="muted small">No check-in</span>
+                <span class="dot some"></span><span class="muted small">Checked in</span>
+                <span class="dot today"></span><span class="muted small">Today</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card quoteCard">
+            <div class="cardHead row">
+              <h2 class="pixel">Motivation</h2>
+              <button id="btnNewQuote" class="btn ghost smallBtn" type="button">New Quote</button>
+            </div>
+            <blockquote id="quoteText">“—”</blockquote>
+            <div id="quoteBy" class="muted small">—</div>
+          </section>
+        </section>
+      </div>
+
+      <footer class="footer muted small">
+        Built for browser-only demo auth (localStorage). No server required.
+      </footer>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
